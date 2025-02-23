@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remaining Free Time Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .input-group {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+        }
+        label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 150px;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: #333;
+            color: white;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 12px;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+        }
+        .input-group:hover .tooltip {
+            display: block;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        #calcBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #calcBtn:hover {
+            background-color: #45a049;
+        }
+        #resetBtn {
+            background-color: #f44336;
+            color: white;
+        }
+        #resetBtn:hover {
+            background-color: #d32f2f;
+        }
+        #shareBtn {
+            background-color: #007BFF;
+            color: white;
+        }
+        #shareBtn:hover {
+            background-color: #0069d9;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #333;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #countdown, #detailedStats {
+            font-size: 18px;
+            color: #666;
+            margin-top: 10px;
+        }
+        #progress-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        #progress-bar {
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        @media (max-width: 400px) {
+            .input-group {
+                flex-direction: column;
+            }
+            input, select {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Remaining Free Time Calculator</h1>
+    <div class="input-group">
+        <label for="birthdate">Your Birthdate:</label>
+        <input type="date" id="birthdate" required>
+        <span class="tooltip">Enter your date of birth</span>
+    </div>
+    <div class="input-group">
+        <label for="country">Your Country:</label>
+        <select id="country" required>
+            <option value="" disabled selected>Select a country</option>
+            <!-- 195+ Countries (Sample below; full list in JS) -->
+            <option value="Afghanistan">Afghanistan</option>
+            <option value="Albania">Albania</option>
+            <option value="Algeria">Algeria</option>
+            <option value="Andorra">Andorra</option>
+            <option value="Angola">Angola</option>
+            <option value="AntiguaBarbuda">Antigua and Barbuda</option>
+            <option value="Argentina">Argentina</option>
+            <option value="Armenia">Armenia</option>
+            <option value="Australia">Australia</option>
+            <option value="Austria">Austria</option>
+            <option value="Azerbaijan">Azerbaijan</option>
+            <option value="Bahamas">Bahamas</option>
+            <option value="Bahrain">Bahrain</option>
+            <option value="Bangladesh">Bangladesh</option>
+            <option value="Barbados">Barbados</option>
+            <option value="Belarus">Belarus</option>
+            <option value="Belgium">Belgium</option>
+            <option value="Belize">Belize</option>
+            <option value="Benin">Benin</option>
+            <option value="Bhutan">Bhutan</option>
+            <option value="Bolivia">Bolivia</option>
+            <option value="BosniaHerzegovina">Bosnia and Herzegovina</option>
+            <option value="Botswana">Botswana</option>
+            <option value="Brazil">Brazil</option>
+            <option value="Brunei">Brunei</option>
+            <option value="Bulgaria">Bulgaria</option>
+            <option value="BurkinaFaso">Burkina Faso</option>
+            <option value="Burundi">Burundi</option>
+            <option value="CaboVerde">Cabo Verde</option>
+            <option value="Cambodia">Cambodia</option>
+            <option value="Cameroon">Cameroon</option>
+            <option value="Canada">Canada</option>
+            <option value="CentralAfricanRepublic">Central African Republic</option>
+            <option value="Chad">Chad</option>
+            <option value="Chile">Chile</option>
+            <option value="China">China</option>
+            <option value="Colombia">Colombia</option>
+            <option value="Comoros">Comoros</option>
+            <option value="Congo">Congo</option>
+            <option value="CostaRica">Costa Rica</option>
+            <option value="Croatia">Croatia</option>
+            <option value="Cuba">Cuba</option>
+            <option value="Cyprus">Cyprus</option>
+            <option value="Czechia">Czechia</option>
+            <option value="Denmark">Denmark</option>
+            <option value="Djibouti">Djibouti</option>
+            <option value="Dominica">Dominica</option>
+            <option value="DominicanRepublic">Dominican Republic</option>
+            <option value="Ecuador">Ecuador</option>
+            <option value="Egypt">Egypt</option>
+            <option value="ElSalvador">El Salvador</option>
+            <option value="EquatorialGuinea">Equatorial Guinea</option>
+            <option value="Eritrea">Eritrea</option>
+            <option value="Estonia">Estonia</option>
+            <option value="Eswatini">Eswatini</option>
+            <option value="Ethiopia">Ethiopia</option>
+            <option value="Fiji">Fiji</option>
+            <option value="Finland">Finland</option>
+            <option value="France">France</option>
+            <option value="Gabon">Gabon</option>
+            <option value="Gambia">Gambia</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Germany">Germany</option>
+            <option value="Ghana">Ghana</option>
+            <option value="Greece">Greece</option>
+            <option value="Grenada">Grenada</option>
+            <option value="Guatemala">Guatemala</option>
+            <option value="Guinea">Guinea</option>
+            <option value="GuineaBissau">Guinea-Bissau</option>
+            <option value="Guyana">Guyana</option>
+            <option value="Haiti">Haiti</option>
+            <option value="Honduras">Honduras</option>
+            <option value="Hungary">Hungary</option>
+            <option value="Iceland">Iceland</option>
+            <option value="India">India</option>
+            <option value="Indonesia">Indonesia</option>
+            <option value="Iran">Iran</option>
+            <option value="Iraq">Iraq</option>
+            <option value="Ireland">Ireland</option>
+            <option value="Israel">Israel</option>
+            <option value="Italy">Italy</option>
+            <option value="Jamaica">Jamaica</option>
+            <option value="Japan">Japan</option>
+            <option value="Jordan">Jordan</option>
+            <option value="Kazakhstan">Kazakhstan</option>
+            <option value="Kenya">Kenya</option>
+            <option value="Kiribati">Kiribati</option>
+            <option value="NorthKorea">North Korea</option>
+            <option value="SouthKorea">South Korea</option>
+            <option value="Kuwait">Kuwait</option>
+            <option value="Kyrgyzstan">Kyrgyzstan</option>
+            <option value="Laos">Laos</option>
+            <option value="Latvia">Latvia</option>
+            <option value="Lebanon">Lebanon</option>
+            <option value="Lesotho">Lesotho</option>
+            <option value="Liberia">Liberia</option>
+            <option value="Libya">Libya</option>
+            <option value="Liechtenstein">Liechtenstein</option>
+            <option value="Lithuania">Lithuania</option>
+            <option value="Luxembourg">Luxembourg</option>
+            <option value="Madagascar">Madagascar</option>
+            <option value="Malawi">Malawi</option>
+            <option value="Malaysia">Malaysia</option>
+            <option value="Maldives">Maldives</option>
+            <option value="Mali">Mali</option>
+            <option value="Malta">Malta</option>
+            <option value="MarshallIslands">Marshall Islands</option>
+            <option value="Mauritania">Mauritania</option>
+            <option value="Mauritius">Mauritius</option>
+            <option value="Mexico">Mexico</option>
+            <option value="Micronesia">Micronesia</option>
+            <option value="Moldova">Moldova</option>
+            <option value="Monaco">Monaco</option>
+            <option value="Mongolia">Mongolia</option>
+            <option value="Montenegro">Montenegro</option>
+            <option value="Morocco">Morocco</option>
+            <option value="Mozambique">Mozambique</option>
+            <option value="Myanmar">Myanmar</option>
+            <option value="Namibia">Namibia</option>
+            <option value="Nauru">Nauru</option>
+            <option value="Nepal">Nepal</option>
+            <option value="Netherlands">Netherlands</option>
+            <option value="NewZealand">New Zealand</option>
+            <option value="Nicaragua">Nicaragua</option>
+            <option value="Niger">Niger</option>
+            <option value="Nigeria">Nigeria</option>
+            <option value="NorthMacedonia">North Macedonia</option>
+            <option value="Norway">Norway</option>
+            <option value="Oman">Oman</option>
+            <option value="Pakistan">Pakistan</option>
+            <option value="Palau">Palau</option>
+            <option value="Panama">Panama</option>
+            <option value="PapuaNewGuinea">Papua New Guinea</option>
+            <option value="Paraguay">Paraguay</option>
+            <option value="Peru">Peru</option>
+            <option value="Philippines">Philippines</option>
+            <option value="Poland">Poland</option>
+            <option value="Portugal">Portugal</option>
+            <option value="Qatar">Qatar</option>
+            <option value="Romania">Romania</option>
+            <option value="Russia">Russia</option>
+            <option value="Rwanda">Rwanda</option>
+            <option value="SaintKittsNevis">Saint Kitts and Nevis</option>
+            <option value="SaintLucia">Saint Lucia</option>
+            <option value="SaintVincentGrenadines">Saint Vincent and the Grenadines</option>
+            <option value="Samoa">Samoa</option>
+            <option value="SanMarino">San Marino</option>
+            <option value="SaoTomePrincipe">Sao Tome and Principe</option>
+            <option value="SaudiArabia">Saudi Arabia</option>
+            <option value="Senegal">Senegal</option>
+            <option value="Serbia">Serbia</option>
+            <option value="Seychelles">Seychelles</option>
+            <option value="SierraLeone">Sierra Leone</option>
+            <option value="Singapore">Singapore</option>
+            <option value="Slovakia">Slovakia</option>
+            <option value="Slovenia">Slovenia</option>
+            <option value="SolomonIslands">Solomon Islands</option>
+            <option value="Somalia">Somalia</option>
+            <option value="SouthAfrica">South Africa</option>
+            <option value="SouthSudan">South Sudan</option>
+            <option value="Spain">Spain</option>
+            <option value="SriLanka">Sri Lanka</option>
+            <option value="Sudan">Sudan</option>
+            <option value="Suriname">Suriname</option>
+            <option value="Sweden">Sweden</option>
+            <option value="Switzerland">Switzerland</option>
+            <option value="Syria">Syria</option>
+            <option value="Tajikistan">Tajikistan</option>
+            <option value="Tanzania">Tanzania</option>
+            <option value="Thailand">Thailand</option>
+            <option value="TimorLeste">Timor-Leste</option>
+            <option value="Togo">Togo</option>
+            <option value="Tonga">Tonga</option>
+            <option value="TrinidadTobago">Trinidad and Tobago</option>
+            <option value="Tunisia">Tunisia</option>
+            <option value="Turkey">Turkey</option>
+            <option value="Turkmenistan">Turkmenistan</option>
+            <option value="Tuvalu">Tuvalu</option>
+            <option value="Uganda">Uganda</option>
+            <option value="Ukraine">Ukraine</option>
+            <option value="UnitedArabEmirates">United Arab Emirates</option>
+            <option value="UK">United Kingdom</option>
+            <option value="Uruguay">Uruguay</option>
+            <option value="Uzbekistan">Uzbekistan</option>
+            <option value="Vanuatu">Vanuatu</option>
+            <option value="VaticanCity">Vatican City</option>
+            <option value="Venezuela">Venezuela</option>
+            <option value="Vietnam">Vietnam</option>
+            <option value="Yemen">Yemen</option>
+            <option value="Zambia">Zambia</option>
+            <option value="Zimbabwe">Zimbabwe</option>
+        </select>
+        <span class="tooltip">Select your country of residence</span>
+    </div>
+    <div class="input-group">
+        <label for="gender">Your Gender:</label>
+        <select id="gender" required>
+            <option value="" disabled selected>Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+        </select>
+        <span class="tooltip">Choose your gender</span>
+    </div>
+    <div class="input-group">
+        <label for="freeHours">Daily Free Hours:</label>
+        <input type="number" id="freeHours" min="0" max="24" value="5" required>
+        <span class="tooltip">Hours free per day (0-24)</span>
+    </div>
+    <button id="calcBtn" onclick="calculateFreeTime()">Calculate</button>
+    <button id="resetBtn" onclick="resetForm()">Reset</button>
+    <button id="shareBtn" onclick="copyResult()" disabled>Copy Result</button>
+    <div id="result"></div>
+    <div id="detailedStats"></div>
+    <div id="countdown"></div>
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <script>
+        // Life expectancy data for 195+ countries (2025 estimates, male/female)
+        const lifeExpectancyData = {
+            "Afghanistan": { male: 63.0, female: 66.0 }, "Albania": { male: 77.5, female: 82.0 },
+            "Algeria": { male: 76.0, female: 78.0 }, "Andorra": { male: 83.0, female: 87.0 },
+            "Angola": { male: 61.0, female: 64.0 }, "AntiguaBarbuda": { male: 77.0, female: 81.0 },
+            "Argentina": { male: 76.5, female: 81.0 }, "Armenia": { male: 73.0, female: 78.0 },
+            "Australia": { male: 83.5, female: 87.0 }, "Austria": { male: 81.5, female: 86.0 },
+            "Azerbaijan": { male: 73.0, female: 77.0 }, "Bahamas": { male: 74.0, female: 78.0 },
+            "Bahrain": { male: 78.0, female: 81.0 }, "Bangladesh": { male: 72.5, female: 75.0 },
+            "Barbados": { male: 78.0, female: 82.0 }, "Belarus": { male: 71.0, female: 79.0 },
+            "Belgium": { male: 81.0, female: 85.5 }, "Belize": { male: 73.0, female: 77.0 },
+            "Benin": { male: 62.0, female: 65.0 }, "Bhutan": { male: 72.0, female: 74.0 },
+            "Bolivia": { male: 71.0, female: 75.0 }, "BosniaHerzegovina": { male: 76.0, female: 80.0 },
+            "Botswana": { male: 65.0, female: 68.0 }, "Brazil": { male: 76.0, female: 80.0 },
+            "Brunei": { male: 76.5, female: 80.0 }, "Bulgaria": { male: 73.5, female: 79.0 },
+            "BurkinaFaso": { male: 61.0, female: 63.0 }, "Burundi": { male: 62.0, female: 65.0 },
+            "CaboVerde": { male: 73.0, female: 78.0 }, "Cambodia": { male: 70.0, female: 74.0 },
+            "Cameroon": { male: 61.0, female: 63.0 }, "Canada": { male: 82.0, female: 86.0 },
+            "CentralAfricanRepublic": { male: 55.0, female: 58.0 }, "Chad": { male: 57.0, female: 60.0 },
+            "Chile": { male: 79.0, female: 83.0 }, "China": { male: 78.0, female: 82.0 },
+            "Colombia": { male: 75.0, female: 80.0 }, "Comoros": { male: 65.0, female: 68.0 },
+            "Congo": { male: 63.0, female: 66.0 }, "CostaRica": { male: 79.0, female: 83.5 },
+            "Croatia": { male: 78.0, female: 83.0 }, "Cuba": { male: 77.0, female: 81.0 },
+            "Cyprus": { male: 81.0, female: 85.0 }, "Czechia": { male: 79.0, female: 84.0 },
+            "Denmark": { male: 81.5, female: 85.5 }, "Djibouti": { male: 65.0, female: 68.0 },
+            "Dominica": { male: 74.0, female: 78.0 }, "DominicanRepublic": { male: 73.0, female: 77.0 },
+            "Ecuador": { male: 76.0, female: 80.0 }, "Egypt": { male: 70.0, female: 73.0 },
+            "ElSalvador": { male: 71.0, female: 77.0 }, "EquatorialGuinea": { male: 61.0, female: 64.0 },
+            "Eritrea": { male: 65.0, female: 68.0 }, "Estonia": { male: 77.0, female: 83.0 },
+            "Eswatini": { male: 58.0, female: 62.0 }, "Ethiopia": { male: 66.0, female: 70.0 },
+            "Fiji": { male: 70.0, female: 74.0 }, "Finland": { male: 82.0, female: 86.0 },
+            "France": { male: 80.5, female: 86.0 }, "Gabon": { male: 66.0, female: 69.0 },
+            "Gambia": { male: 63.0, female: 66.0 }, "Georgia": { male: 72.0, female: 78.0 },
+            "Germany": { male: 81.8, female: 86.5 }, "Ghana": { male: 66.0, female: 68.0 },
+            "Greece": { male: 80.0, female: 85.0 }, "Grenada": { male: 73.0, female: 77.0 },
+            "Guatemala": { male: 71.0, female: 76.0 }, "Guinea": { male: 61.0, female: 63.0 },
+            "GuineaBissau": { male: 59.0, female: 62.0 }, "Guyana": { male: 70.0, female: 74.0 },
+            "Haiti": { male: 64.0, female: 67.0 }, "Honduras": { male: 73.0, female: 77.0 },
+            "Hungary": { male: 76.5, female: 81.0 }, "Iceland": { male: 83.0, female: 86.5 },
+            "India": { male: 71.5, female: 74.0 }, "Indonesia": { male: 72.0, female: 76.0 },
+            "Iran": { male: 76.0, female: 78.5 }, "Iraq": { male: 70.5, female: 73.0 },
+            "Ireland": { male: 82.0, female: 86.0 }, "Israel": { male: 83.0, female: 87.0 },
+            "Italy": { male: 82.0, female: 87.0 }, "Jamaica": { male: 73.0, female: 77.0 },
+            "Japan": { male: 85.0, female: 90.0 }, "Jordan": { male: 74.0, female: 78.0 },
+            "Kazakhstan": { male: 71.0, female: 77.0 }, "Kenya": { male: 65.0, female: 68.0 },
+            "Kiribati": { male: 67.0, female: 71.0 }, "NorthKorea": { male: 71.0, female: 75.0 },
+            "SouthKorea": { male: 82.5, female: 88.0 }, "Kuwait": { male: 78.0, female: 81.0 },
+            "Kyrgyzstan": { male: 71.0, female: 76.0 }, "Laos": { male: 68.0, female: 71.0 },
+            "Latvia": { male: 74.0, female: 80.0 }, "Lebanon": { male: 76.0, female: 80.0 },
+            "Lesotho": { male: 55.0, female: 59.0 }, "Liberia": { male: 62.0, female: 65.0 },
+            "Libya": { male: 73.0, female: 76.0 }, "Liechtenstein": { male: 83.0, female: 87.0 },
+            "Lithuania": { male: 75.0, female: 81.0 }, "Luxembourg": { male: 82.0, female: 86.0 },
+            "Madagascar": { male: 65.0, female: 68.0 }, "Malawi": { male: 63.0, female: 66.0 },
+            "Malaysia": { male: 76.0, female: 80.0 }, "Maldives": { male: 79.0, female: 82.0 },
+            "Mali": { male: 60.0, female: 62.0 }, "Malta": { male: 81.0, female: 85.0 },
+            "MarshallIslands": { male: 71.0, female: 75.0 }, "Mauritania": { male: 65.0, female: 68.0 },
+            "Mauritius": { male: 74.0, female: 79.0 }, "Mexico": { male: 75.0, female: 79.0 },
+            "Micronesia": { male: 70.0, female: 74.0 }, "Moldova": { male: 70.0, female: 76.0 },
+            "Monaco": { male: 85.0, female: 89.0 }, "Mongolia": { male: 70.0, female: 75.0 },
+            "Montenegro": { male: 76.0, female: 80.0 }, "Morocco": { male: 74.0, female: 77.0 },
+            "Mozambique": { male: 59.0, female: 62.0 }, "Myanmar": { male: 67.0, female: 71.0 },
+            "Namibia": { male: 63.0, female: 67.0 }, "Nauru": { male: 68.0, female: 72.0 },
+            "Nepal": { male: 71.0, female: 74.0 }, "Netherlands": { male: 82.0, female: 86.0 },
+            "NewZealand": { male: 82.5, female: 86.5 }, "Nicaragua": { male: 73.0, female: 77.0 },
+            "Niger": { male: 62.0, female: 64.0 }, "Nigeria": { male: 62.0, female: 64.0 },
+            "NorthMacedonia": { male: 75.0, female: 79.0 }, "Norway": { male: 83.5, female: 87.5 },
+            "Oman": { male: 77.0, female: 80.0 }, "Pakistan": { male: 68.0, female: 70.0 },
+            "Palau": { male: 71.0, female: 75.0 }, "Panama": { male: 77.0, female: 81.0 },
+            "PapuaNewGuinea": { male: 65.0, female: 68.0 }, "Paraguay": { male: 74.0, female: 78.0 },
+            "Peru": { male: 76.0, female: 80.0 }, "Philippines": { male: 71.0, female: 75.0 },
+            "Poland": { male: 78.0, female: 83.0 }, "Portugal": { male: 81.0, female: 86.0 },
+            "Qatar": { male: 80.0, female: 83.0 }, "Romania": { male: 74.0, female: 79.0 },
+            "Russia": { male: 73.2, female: 78.0 }, "Rwanda": { male: 67.0, female: 70.0 },
+            "SaintKittsNevis": { male: 74.0, female: 78.0 }, "SaintLucia": { male: 75.0, female: 79.0 },
+            "SaintVincentGrenadines": { male: 73.0, female: 77.0 }, "Samoa": { male: 73.0, female: 76.0 },
+            "SanMarino": { male: 83.0, female: 87.0 }, "SaoTomePrincipe": { male: 68.0, female: 71.0 },
+            "SaudiArabia": { male: 76.5, female: 79.0 }, "Senegal": { male: 67.0, female: 70.0 },
+            "Serbia": { male: 75.0, female: 79.0 }, "Seychelles": { male: 73.0, female: 78.0 },
+            "SierraLeone": { male: 58.0, female: 60.0 }, "Singapore": { male: 83.0, female: 87.0 },
+            "Slovakia": { male: 77.0, female: 82.0 }, "Slovenia": { male: 81.0, female: 85.0 },
+            "SolomonIslands": { male: 71.0, female: 74.0 }, "Somalia": { male: 57.0, female: 60.0 },
+            "SouthAfrica": { male: 65.0, female: 68.0 }, "SouthSudan": { male: 58.0, female: 61.0 },
+            "Spain": { male: 81.5, female: 86.5 }, "SriLanka": { male: 74.0, female: 79.0 },
+            "Sudan": { male: 65.0, female: 68.0 }, "Suriname": { male: 70.0, female: 74.0 },
+            "Sweden": { male: 83.0, female: 87.0 }, "Switzerland": { male: 83.5, female: 87.5 },
+            "Syria": { male: 70.0, female: 74.0 }, "Tajikistan": { male: 71.0, female: 75.0 },
+            "Tanzania": { male: 66.0, female: 69.0 }, "Thailand": { male: 75.5, female: 80.0 },
+            "TimorLeste": { male: 68.0, female: 71.0 }, "Togo": { male: 62.0, female: 64.0 },
+            "Tonga": { male: 71.0, female: 74.0 }, "TrinidadTobago": { male: 73.0, female: 77.0 },
+            "Tunisia": { male: 75.0, female: 78.0 }, "Turkey": { male: 77.0, female: 81.0 },
+            "Turkmenistan": { male: 69.0, female: 73.0 }, "Tuvalu": { male: 68.0, female: 72.0 },
+            "Uganda": { male: 63.0, female: 66.0 }, "Ukraine": { male: 70.0, female: 76.0 },
+            "UnitedArabEmirates": { male: 78.0, female: 81.0 }, "UK": { male: 81.2, female: 85.0 },
+            "Uruguay": { male: 77.0, female: 82.0 }, "Uzbekistan": { male: 72.0, female: 76.0 },
+            "Vanuatu": { male: 71.0, female: 74.0 }, "VaticanCity": { male: 81.0, female: 85.0 },
+            "Venezuela": { male: 71.0, female: 76.0 }, "Vietnam": { male: 74.0, female: 78.0 },
+            "Yemen": { male: 65.0, female: 68.0 }, "Zambia": { male: 62.0, female: 65.0 },
+            "Zimbabwe": { male: 61.0, female: 64.0 }
+        };
+
+        let countdownInterval = null;
+
+        function calculateFreeTime() {
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            const birthdateInput = document.getElementById("birthdate").value;
+            const country = document.getElementById("country").value;
+            const gender = document.getElementById("gender").value;
+            const freeHoursPerDay = parseFloat(document.getElementById("freeHours").value);
+
+            if (!birthdateInput || !country || !gender || isNaN(freeHoursPerDay)) {
+                alert("Please fill in all fields correctly.");
+                return;
+            }
+            if (freeHoursPerDay < 0 || freeHoursPerDay > 24) {
+                alert("Daily free hours must be between 0 and 24.");
+                return;
+            }
+
+            const currentDate = new Date();
+            const birthdate = new Date(birthdateInput);
+            if (isNaN(birthdate)) {
+                alert("Invalid birthdate.");
+                return;
+            }
+            if (birthdate > currentDate) {
+                alert("Birthdate cannot be in the future.");
+                return;
+            }
+
+            const ageInMs = currentDate - birthdate;
+            const ageInYears = ageInMs / (1000 * 60 * 60 * 24 * 365.25);
+
+            const countryData = lifeExpectancyData[country];
+            if (!countryData) {
+                alert("Life expectancy data not available for this country.");
+                return;
+            }
+            const lifeExpectancy = countryData[gender];
+
+            const remainingYears = lifeExpectancy - ageInYears;
+            if (remainingYears <= 0) {
+                document.getElementById("result").innerHTML = "Based on averages, your free time has already passed!";
+                document.getElementById("progress-bar").style.width = "100%";
+                document.getElementById("countdown").innerHTML = "";
+                document.getElementById("detailedStats").innerHTML = "";
+                document.getElementById("shareBtn").disabled = true;
+                return;
+            }
+
+            const daysPerYear = 365;
+            const totalFreeHours = remainingYears * daysPerYear * freeHoursPerDay;
+            const totalFreeDays = totalFreeHours / 24;
+
+            const resultText = `You have approximately ${Math.round(totalFreeHours)} hours (or ${Math.round(totalFreeDays)} days) of free time left.`;
+            document.getElementById("result").innerHTML = resultText;
+
+            const lifePercentage = (ageInYears / lifeExpectancy) * 100;
+            document.getElementById("progress-bar").style.width = `${Math.min(lifePercentage, 100)}%`;
+
+            let remainingHours = totalFreeHours;
+            document.getElementById("countdown").innerHTML = `Time left: ${Math.round(remainingHours)} hours`;
+            countdownInterval = setInterval(() => {
+                remainingHours -= freeHoursPerDay / (24 * 60 * 60);
+                if (remainingHours <= 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById("countdown").innerHTML = "Time's up!";
+                } else {
+                    document.getElementById("countdown").innerHTML = `Time left: ${Math.round(remainingHours)} hours`;
+                }
+            }, 1000);
+
+            const remainingDays = remainingYears * daysPerYear;
+            const years = Math.floor(remainingYears);
+            const months = Math.floor((remainingYears - years) * 12);
+            const days = Math.floor((remainingDays % 365) % 30);
+            document.getElementById("detailedStats").innerHTML = `Detailed: ${years} years, ${months} months, ${days} days`;
+
+            document.getElementById("shareBtn").disabled = false;
+        }
+
+        function resetForm() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            document.getElementById("birthdate").value = "";
+            document.getElementById("country").value = "";
+            document.getElementById("gender").value = "";
+            document.getElementById("freeHours").value = "5";
+            document.getElementById("result").innerHTML = "";
+            document.getElementById("countdown").innerHTML = "";
+            document.getElementById("detailedStats").innerHTML = "";
+            document.getElementById("progress-bar").style.width = "0%";
+            document.getElementById("shareBtn").disabled = true;
+        }
+
+        function copyResult() {
+            const resultText = document.getElementById("result").innerHTML;
+            const countdownText = document.getElementById("countdown").innerHTML;
+            const detailedText = document.getElementById("detailedStats").innerHTML;
+            const textToCopy = `${resultText}\n${countdownText}\n${detailedText}`;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("Result copied to clipboard!");
+            });
+        }
+    </script>
+</body>
+</html>
